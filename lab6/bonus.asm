@@ -48,62 +48,30 @@ initialize:
 check_process:        
     BTFSC PORTB, 0
         GOTO check_process
+    BTG LATA, 0
     GOTO state_one
 
 state_one:
-    BTG 0x000, 0
-    MOVLW b'00000000'
-    CPFSGT LATA
-        GOTO loop_one
-    BTG LATA, 0
-    DELAY d'200', d'180'
+    MOVLW b'00000001'
+    BTFSC LATA, 4
+        MOVWF LATA
+    DELAY d'200', d'100' ;delay 0.5s
+    RLNCF LATA
     BTFSS PORTB, 0
         GOTO state_two
-    loop_one:
-        RLNCF LATA
-        DELAY d'200', d'180' ;delay 0.5s
-        BTFSS PORTB, 0
-            GOTO state_two
-        RLNCF LATA
-        DELAY d'200', d'180' ;delay 0.5s
-        BTFSS PORTB, 0
-            GOTO state_two
-        RLNCF LATA
-        DELAY d'200', d'180' ;delay 0.5s
-        BTFSS PORTB, 0
-            GOTO state_two
-        BTG LATA, 3
-        BTG LATA, 0
-    GOTO loop_one
+GOTO state_one
 
 state_two:
-    BTG 0x000, 0
-    MOVLW b'00000000'
-    CPFSGT LATA
-        GOTO loop_two
-    BTG LATA, 3
-    DELAY d'200', d'360' ;delay 0.5s
+    MOVLW b'00001000'
+    BTFSC LATA, 7
+        MOVWF LATA
+    DELAY d'200', d'100' ;delay 0.5s
+    RLNCF LATA
     BTFSS PORTB, 0
         GOTO wait_for_a_sec
-    loop_two:
-        RRNCF LATA
-        DELAY d'200', d'360' ;delay 0.5s
-        BTFSS PORTB, 0
-            GOTO wait_for_a_sec
-        RRNCF LATA
-        DELAY d'200', d'360' ;delay 0.5s
-        BTFSS PORTB, 0
-            GOTO wait_for_a_sec
-        RRNCF LATA
-        DELAY d'200', d'360' ;delay 0.5s
-        BTFSS PORTB, 0
-            GOTO wait_for_a_sec
-        BTG LATA, 3
-        BTG LATA, 0
-    GOTO loop_two
+GOTO state_two
     
 wait_for_a_sec:
     DELAY d'200', d'180'
     GOTO check_process
-
 end
