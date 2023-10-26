@@ -45,7 +45,7 @@ initialize:
     CLRF TRISA           ;set RA0~RA7 as output TRISA = 0000 0000
 
 ; ckeck button
-check_process:          
+check_process:        
     BTFSC PORTB, 0
         GOTO check_process
     GOTO state_one
@@ -84,21 +84,26 @@ state_two:
     BTG LATA, 3
     DELAY d'200', d'360' ;delay 0.5s
     BTFSS PORTB, 0
-        GOTO check_process
+        GOTO wait_for_a_sec
     loop_two:
         RRNCF LATA
         DELAY d'200', d'360' ;delay 0.5s
         BTFSS PORTB, 0
-            GOTO check_process
+            GOTO wait_for_a_sec
         RRNCF LATA
         DELAY d'200', d'360' ;delay 0.5s
         BTFSS PORTB, 0
-            GOTO check_process
+            GOTO wait_for_a_sec
         RRNCF LATA
         DELAY d'200', d'360' ;delay 0.5s
         BTFSS PORTB, 0
-            GOTO check_process
+            GOTO wait_for_a_sec
         BTG LATA, 3
         BTG LATA, 0
     GOTO loop_two
     
+wait_for_a_sec:
+    DELAY d'200', d'180'
+    GOTO check_process
+
+end
