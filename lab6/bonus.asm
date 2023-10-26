@@ -55,24 +55,31 @@ state_one:
     MOVLW b'00000001'
     BTFSC LATA, 4
         MOVWF LATA
-    DELAY d'200', d'100' ;delay 0.5s
-    RLNCF LATA
+    DELAY d'200', d'50' ;delay 0.5s
     BTFSS PORTB, 0
         GOTO state_two
+    DELAY d'200', d'50' ;delay 0.5s
+    BTFSS PORTB, 0
+        GOTO state_two
+    RLNCF LATA
+    
 GOTO state_one
 
 state_two:
     MOVLW b'00001000'
     BTFSC LATA, 7
         MOVWF LATA
-    DELAY d'200', d'100' ;delay 0.5s
-    RRNCF LATA
+    DELAY d'200', d'50' ;delay 0.5s
     BTFSS PORTB, 0
         GOTO wait_for_a_sec
+    DELAY d'200', d'50' ;delay 0.5s
+    BTFSS PORTB, 0
+        GOTO wait_for_a_sec
+    RRNCF LATA
 GOTO state_two
     
 wait_for_a_sec:
     CLRF LATA
-    DELAY d'200', d'180'
+    DELAY d'200', d'100'
     GOTO check_process
 end
