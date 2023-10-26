@@ -66,7 +66,7 @@ state_two:
     BTFSC LATA, 7
         MOVWF LATA
     DELAY d'200', d'100' ;delay 0.5s
-    RLNCF LATA
+    RRNCF LATA
     BTFSS PORTB, 0
         GOTO wait_for_a_sec
 GOTO state_two
