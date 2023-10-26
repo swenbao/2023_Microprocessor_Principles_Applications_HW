@@ -72,6 +72,7 @@ state_two:
 GOTO state_two
     
 wait_for_a_sec:
+    CLRF LATA
     DELAY d'200', d'180'
     GOTO check_process
 end
