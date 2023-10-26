@@ -50,6 +50,22 @@ check_process:
         GOTO check_process
     GOTO state_one
 
+    ; if state 0
+    MOVLW b'00000000'
+    CPFSEQ 0x000
+        GOTO state_one
+
+    ; if state 1
+    MOVLW b'00000001'
+    CPFSEQ 0x000
+        GOTO state_two
+
+    ; if state 2
+    MOVLW b'00000010'
+    CPFSEQ 0x000
+        CLRF 0x000 ; change state to 0
+    GOTO check_process
+
 state_one:
     BTG 0x000, 0
     MOVLW b'00000000'
