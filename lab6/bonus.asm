@@ -48,8 +48,54 @@ initialize:
 check_process:          
     BTFSC PORTB, 0
         GOTO state_switch
-    BRA lightup
+    GOTO check_process
+
+
+state_one:
+    CLRF LATA 
+    BTG LATA, 0
+    DELAY d'200', d'360' ;delay 0.5s
+    BTG LATA, 0
+    BTG LATA, 1
+    DELAY d'200', d'360' ;delay 0.5s
+    BTG LATA, 1
+    BTG LATA, 2
+    DELAY d'200', d'360' ;delay 0.5s
+    BTG LATA, 2
+    BTG LATA, 3
+    DELAY d'200', d'360' ;delay 0.5s
+    BTG LATA, 3
+    BTFSC 0x000, 0
+        GOTO state_one
+
+state_two:
+    CLRF LATA
+    BTG LATA, 3
+    DELAY d'200', d'360' ;delay 0.5s
+    BTG LATA, 3
+    BTG LATA, 2
+    DELAY d'200', d'360' ;delay 0.5s
+    BTG LATA, 2
+    BTG LATA, 1
+    DELAY d'200', d'360' ;delay 0.5s
+    BTG LATA, 1
+    BTG LATA, 0
+    DELAY d'200', d'360' ;delay 0.5s
+    BTG LATA, 0
+    BTFSC 0x000, 1
+        GOTO state_two
 
 state_switch:
+    ; if state 0
     MOVLW b'00000000'
-    CPFSEQ 
+    CPFSEQ 0x000
+        BTG 0x000, 0 ; change state to 1
+    ; if state 1
+    MOVLW b'00000001'
+    CPFSEQ 0x000
+        RLNCF 0x000 ; change state to 2
+    ; if state 2
+    MOVLW b'00000010'
+    CPFSEQ 0x000
+        CLRF 0x000 ; change state to 0
+    
