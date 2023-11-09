@@ -12,13 +12,14 @@ List p=18f4520
     ; binary : b7 b6 b5 b4 b3 b2 b1 b0
     ; gray   : g7 g6 g5 g4 g3 g2 g1 g0
     
+    ; g7 = b7
     ; g6 = b7 XOR b6
     ; g5 = b6 XOR b5
     ; g4 = b5 XOR b4
     ; g3 = b4 XOR b3
     ; g2 = b3 XOR b2
     ; g1 = b2 XOR b1
-    ; g0 = b1 XOR b0
+    ; g0 = b1 XOR b0    
 
     ; we put gray code result in [0x001]
     ; First, we put right shift binary code in [0x001]
