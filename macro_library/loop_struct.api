@@ -1,7 +1,0 @@
-MOVLF 0x04, 0xF0
-        loop:
-        
-            ; code
-
-        DECFSZ 0xF0, F ; [0xF0] = [0xF0] - 1
-            GOTO loop
