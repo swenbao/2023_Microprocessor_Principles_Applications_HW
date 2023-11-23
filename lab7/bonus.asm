@@ -66,9 +66,6 @@ ISR:
     BRA buttonISR           ; 若有觸發，則跳到buttonISR，處理button的interrupt
 
     timerISR:
-        BTFSC 0x00, 1
-            BRA endTimerISR
-
         BTFSS 0x00, 0
             BRA count_down
         BRA count_up
@@ -81,9 +78,6 @@ ISR:
             BRA endTimerISR
 
     buttonISR:
-        BTFSC 0x00, 1
-            BTG 0x00, 1
-
         time_interval_shift:
             MOVLW D'244'
             CPFSEQ PR2 ; if PR2 == 244, skip next instruction
@@ -110,13 +104,14 @@ ISR:
     
 Initial:
     CLRF 0x00
-    BTG 0x00, 1 ;[0x00] = 00000010
     MOVLW 0x0F
     MOVWF ADCON1
     CLRF TRISA
     CLRF LATA
-    BSF RCON, IPEN
+    BCF RCON, IPEN
     BSF INTCON, GIE
+    BCF INTCON, INT0IF		; 先將Interrupt flag bit清空
+    BSF INTCON, INT0IE		; 將interrupt0 enable bit 打開 (INT0與RB0 pin腳位置相同)
     BCF PIR1, TMR2IF		; 為了使用TIMER2，所以要設定好相關的TMR2IF、TMR2IE、TMR2IP。
     BSF IPR1, TMR2IP
     BSF PIE1 , TMR2IE
@@ -128,6 +123,8 @@ Initial:
     MOVLW D'00100000'
     MOVWF OSCCON	        ; 記得將系統時脈調整成250kHz
     
+    BSF TRISB,  0
+
 main:		
     bra main	    
     
