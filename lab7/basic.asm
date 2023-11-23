@@ -94,15 +94,14 @@ ISR:				; Interrupt發生時，會跳到這裡執行。
     MOVLW 0x00
     CPFSEQ 0x00
         GOTO test
-    GOTO enter
+    GOTO state_one ; in state0 goto state1
 
     test:
         BTFSC 0x00, 0
             GOTO state_two ; in state1 goto state2
         GOTO state_one ; in state2 goto state1
-    enter:
-        GOTO state_one ; in state0 goto state1
-    jj:
+    
+    end_ISR:
 
     BCF INTCON, INT0IF
     RETFIE                    ; 離開ISR，回到原本程式執行的位址，同時會將GIE設為1，允許之後的interrupt能夠觸發
@@ -120,8 +119,8 @@ Initial:
     BSF INTCON, GIE		; 將Global interrupt enable bit打開
     BSF INTCON, INT0IE		; 將interrupt0 enable bit 打開 (INT0與RB0 pin腳位置相同)
 
-state_zero:
-    BRA state_zero
+main:
+    BRA main
 
 state_one:
     ; Record state [0x00] = 1 
@@ -135,8 +134,7 @@ state_one:
     RLNCF LATA
     DELAY d'200', d'100' ;delay 0.5s
     CLRF LATA
-    stay_in_one:
-        BRA stay_in_one
+    BRA end_ISR
 
 state_two:
     ; Record state [0x00] = 2
@@ -150,7 +148,6 @@ state_two:
     RLNCF LATA
     DELAY d'200', d'100' ;delay 0.5s
     CLRF LATA
-    stay_in_two:
-        BRA stay_in_two
+    BRA end_ISR
 
     end
