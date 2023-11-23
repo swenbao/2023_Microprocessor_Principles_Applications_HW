@@ -64,14 +64,14 @@ ISR:
     
     MOVLW D'122'
     CPFSEQ PR2
-        BRA oneTwoTwo
-    BRA twoFourFour
+        BRA half_sec
+    BRA one_sec
 
-    oneTwoTwo:
+    half_sec:
         MOVLW D'122'
         MOVWF PR2
         BRA endISR
-    twoFourFour:
+    one_sec:
         MOVLW D'244'
         MOVWF PR2
 
