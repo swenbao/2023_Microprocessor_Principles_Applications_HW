@@ -55,7 +55,7 @@
 ; CONFIG7H
   CONFIG  EBTRB = OFF           ; Boot Block Table Read Protection bit (Boot block (000000-0007FFh) not protected from table reads executed in other blocks)
 
-    org 0x00
+org 0x00
     
 goto Initial			    
 ISR:				
@@ -66,61 +66,39 @@ ISR:
     BRA buttonISR           ; 若有觸發，則跳到buttonISR，處理button的interrupt
 
     timerISR:
-        one:
-        BTFSS 0x00, 0
-            BRA two
-        ; state1 
-        INCF LATA      
-        BRA endTimerISR
-        
-        two:
-            BTFSS 0x00, 1
-                BRA three
-            ; state2
-            DECF LATA
+        BTFSC 0x00, 1
             BRA endTimerISR
 
-        three:
-            BTFSS 0x00, 2
-                BRA four
-            ; state3
+        BTFSS 0x00, 0
+            BRA count_down
+        BRA count_up
+
+        count_up:
             INCF LATA
             BRA endTimerISR
-
-        four:
-            BTFSS 0x00, 3
-                BRA endTimerISR 
-            ; state4
+        count_down:
             DECF LATA
             BRA endTimerISR
 
-
     buttonISR:
-        MOVLW 0x00
-        CPFSEQ 0x00
-            BRA test1
-        BRA state1 ; in state0 goto state1
-        
-        test1:
-            BTFSS 0x00, 0
-                BRA test2
-            BRA state2 ; in state1 goto state2
-        
-        test2:
-            BTFSS 0x00, 1
-                BRA test3
-            BRA state3 ; in state2 goto state3
+        BTFSC 0x00, 1
+            BTG 0x00, 1
 
-        test3:
-            BTFSS 0x00, 2
-                BRA test4
-            BRA state4 ; in state3 goto state4
-        
-        test4:
-            BTFSS 0x00, 3
-                BRA endButtonISR
-            BRA state1 ; in state4 goto state1
+        time_interval_shift:
+            MOVLW D'244'
+            CPFSEQ PR2 ; if PR2 == 244, skip next instruction
+                BRA doubletimer
+            BRA resetTimer
 
+            resetTimer:
+                RRNCF PR2
+                RRNCF PR2
+                BRA inc_dec_shift
+            doubletimer:
+                RLNCF PR2;
+                
+        inc_dec_shift:
+            BTG 0x00, 0
 
     endButtonISR:
         BCF INTCON, INT0IF
@@ -132,6 +110,7 @@ ISR:
     
 Initial:
     CLRF 0x00
+    BTG 0x00, 1 ;[0x00] = 00000010
     MOVLW 0x0F
     MOVWF ADCON1
     CLRF TRISA
@@ -151,42 +130,5 @@ Initial:
     
 main:		
     bra main	    
-
-; the following code is for ISR subroutine
-
-state1:
-    BSF 0x00, 0 ; [0x00] = 0000 0001
-    ; 0.25s
-    MOVLW D'61'
-    MOVWF PR2
-
-    BRA endButtonISR
-
-state2:
-    BCF 0x00, 0 ; [0x00] = 0000 0000
-    BSF 0x00, 1 ; [0x00] = 0000 0010
-    ; 0.5s
-    MOVLW D'122'
-    MOVWF PR2
-
-    BRA endButtonISR
-
-state3:
-    BCF 0x00, 1 ; [0x00] = 0000 0000
-    BSF 0x00, 2 ; [0x00] = 0000 0100
-    ; 1s
-    MOVLW D'244'
-    MOVWF PR2
-
-    BRA endButtonISR
-
-state4:
-    BCF 0x00, 2 ; [0x00] = 0000 0000
-    BSF 0x00, 3 ; [0x00] = 0000 1000
-    ; 0.25s
-    MOVLW D'61'
-    MOVWF PR2
-
-    BRA endButtonISR
     
 end
