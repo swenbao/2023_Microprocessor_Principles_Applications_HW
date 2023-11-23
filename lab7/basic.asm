@@ -145,7 +145,6 @@ state_two:
     MOVWF LATA
     DELAY d'200', d'100' ;delay 0.5s
     RLNCF LATA
-    RLNCF LATA
     DELAY d'200', d'100' ;delay 0.5s
     CLRF LATA
     BRA end_ISR
