@@ -61,8 +61,23 @@ goto Initial
 ISR:				
     org 0x08                ; 大致效果: 每0.5秒會進入一次interrupt
     INCF LATA               ; interrupt會開關LATA一次
-    BCF PIR1, TMR2IF        ; 離開前記得把TMR2IF清空 (清空flag bit)
-    RETFIE
+    
+    MOVLW D'122'
+    CPFSEQ PR2
+        BRA oneTwoTwo
+    BRA twoFourFour
+
+    oneTwoTwo:
+        MOVLW D'122'
+        MOVWF PR2
+        BRA endISR
+    twoFourFour:
+        MOVLW D'244'
+        MOVWF PR2
+
+    endISR:
+        BCF PIR1, TMR2IF        ; 離開前記得把TMR2IF清空 (清空flag bit)
+        RETFIE
     
 Initial:
     MOVLW 0x0F
