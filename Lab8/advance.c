@@ -74,7 +74,7 @@ void __interrupt(high_priority) H_ISR(){
             CCPR1L += 1;
             CCP1CONbits.DC1B = 0;
         }
-        __delay_ms(2);
+        __delay_ms(10);
     }
     CCPR1L = 0x04; // CCPR1L is a file register
     CCP1CONbits.DC1B = 0b00;
