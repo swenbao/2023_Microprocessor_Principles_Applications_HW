@@ -65,27 +65,20 @@
 #define _XTAL_FREQ 125000
 #include <pic18f4520.h>
 
-int state = 0;
 
 void __interrupt(high_priority) H_ISR(){
-    state += 1;
-    if(state == 0){
-        CCPR1L = 0x07; // CCPR1L is a file register
-        CCP1CONbits.DC1B = b'10';
-    } else if(state == 1){
-        CCPR1L = 0x0b; // CCPR1L is a file register
-        CCP1CONbits.DC1B = b'01';
-    } else if(state == 2){
-        CCPR1L = 0x0F; // CCPR1L is a file register
-        CCP1CONbits.DC1B = b'00';
-    } else if(state == 3){
-        CCPR1L = 0x0b; // CCPR1L is a file register
-        CCP1CONbits.DC1B = b'01';
-    } else if(state == 4){
-        CCPR1L = 0x07; // CCPR1L is a file register
-        CCP1CONbits.DC1B = b'10';
-        state = 0;
+    while((CCPR1L*4+CCP1CONbits.DC1B)*32 < 2400){
+        if(CCP1CONbits.DC1B < 4){
+            CCP1CONbits.DC1B += 1;
+        } else if(CCP1CONbits.DC1B == 4){
+            CCPR1L += 1;
+            CCP1CONbits.DC1B = 0;
+        }
+        __delay_ms(1);
     }
+    CCPR1L = 0x04; // CCPR1L is a file register
+    CCP1CONbits.DC1B = 0b00;
+    
     INTCONbits.INT0IF = 0;
 }
 
@@ -133,8 +126,8 @@ void main(void)
      * = (0x07*4 + b'10') * 8µs * 4
      * = 960µs ~= 975µs
      */
-    CCPR1L = 0x07; // CCPR1L is a file register
-    CCP1CONbits.DC1B = b'10';
+    CCPR1L = 0x04; // CCPR1L is a file register
+    CCP1CONbits.DC1B = 0b00;
     
     while(1);
     return;
