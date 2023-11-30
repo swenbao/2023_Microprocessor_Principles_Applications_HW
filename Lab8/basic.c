@@ -65,17 +65,47 @@
 #define _XTAL_FREQ 125000
 #include <pic18f4520.h>
 
+int state = 0;
+
 void __interrupt(high_priority) H_ISR(){
-    if(INTCONbits.INT0IF == 1){ // if INT01F interrupt flag is set, representing that INT0 external interrupt occurred (must be cleared in software)
-        LATAbits.LA0 = 1;
-        __delay_ms(63); 
-        LATAbits.LA0 = 0;
-        INTCONbits.INT0IF = 0;
+    // if(INTCONbits.INT0IF == 1){ // if INT01F interrupt flag is set, representing that INT0 external interrupt occurred (must be cleared in software)
+    //     if(CCPR1L == 0x07 && CCP1CONbits.DC1B == b'10'){
+    //         CCPR1L = 0x0b; // CCPR1L is a file register
+    //         CCP1CONbits.DC1B = b'01';
+    //     }else if(CCPR1L == 0x0b && CCP1CONbits.DC1B == b'01'){
+    //         CCPR1L = 0x0F; // CCPR1L is a file register
+    //         CCP1CONbits.DC1B = b'00';
+    //     }else if(CCPR1L == 0x0F && CCP1CONbits.DC1B == b'00'){
+    //         CCPR1L = 0x0b; // CCPR1L is a file register
+    //         CCP1CONbits.DC1B = b'01';
+    //     }
+
+    // }
+    state += 1;
+    if(state == 0){
+        CCPR1L = 0x07; // CCPR1L is a file register
+        CCP1CONbits.DC1B = b'10';
+    } else if(state == 1){
+        CCPR1L = 0x0b; // CCPR1L is a file register
+        CCP1CONbits.DC1B = b'01';
+    } else if(state == 2){
+        CCPR1L = 0x0F; // CCPR1L is a file register
+        CCP1CONbits.DC1B = b'00';
+    } else if(state == 3){
+        CCPR1L = 0x0b; // CCPR1L is a file register
+        CCP1CONbits.DC1B = b'01';
+    } else if(state == 4){
+        CCPR1L = 0x07; // CCPR1L is a file register
+        CCP1CONbits.DC1B = b'10';
+        state = 0;
     }
+    INTCONbits.INT0IF = 0;
 }
 
 void main(void)
 {
+    state = 0;
+
     // button input initialize
     ADCON1 = 0x0f;  // set all pins to digital
     TRISC = 0x00;  // set RC0~PC8 to output
@@ -113,11 +143,11 @@ void main(void)
     /** 
      * Duty cycle
      * = (CCPR1L:CCP1CON<5:4>) * Tosc * (TMR2 prescaler)
-     * = (0x0b*4 + 0b01) * 8µs * 4
-     * = 0.00144s ~= 1450µs
+     * = (0x07*4 + b'10') * 8µs * 4
+     * = 960µs ~= 975µs
      */
-    CCPR1L = 0x0b; // CCPR1L is a file register
-    CCP1CONbits.DC1B = 0b01;
+    CCPR1L = 0x07; // CCPR1L is a file register
+    CCP1CONbits.DC1B = b'10';
     
     while(1);
     return;
