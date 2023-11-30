@@ -62,20 +62,31 @@
 // Use project enums instead of #define for ON and OFF.
 
 #include <xc.h>
-#define _XTAL_FREQ 1000000
+// #define _XTAL_FREQ 1000000
 #include <pic18f4520.h>
 
-void __interrupt(high_priority) H_ISR() {
-    if (INTCONbits.TMR0IF == 1) {
-        LATCbits.LATC2 = ~LATCbits.LATC2;
-        INTCONbits.TMR0IF = 0;
+void __interrupt(high_priority) H_ISR(){
+    if(INTCONbits.INT0IF == 1){ // if INT01F interrupt flag is set, representing that INT0 external interrupt occurred (must be cleared in software)
+        LATAbits.LA0 = 1;
+        __delay_ms(500); 
+        LATAbits.LA0 = 0;
+        INTCONbits.INT0IF = 0;
     }
 }
 
 void main(void)
 {
-    // initialize
+    // button input initialize
+    ADCON1 = 0x0f;  // set all pins to digital
+    TRISC = 0x00;  // set RC0~PC8 to output
+    LATC = 0x00;  // set RC0~RC8 pins to low
+    TRISBbits.RB0 = 1; // set INT0(RB0) to input
+    RCONbits.IPEN = 0; // disable priority levels on interrupts
+    INTCONbits.INT0IE = 1; // enable INT0 external interrupt
+    INTCONbits.INT0IF = 0; // clear INT0F interrupt flag
+    INTCONbits.GIE = 1; // enable all unmasked interrupts
 
+    // PWM initialize
     T2CONbits.TMR2ON = 0b1; // activate Timer2
     T2CONbits.T2CKPS = 0b01; // prescaler = 4
 
@@ -85,9 +96,10 @@ void main(void)
     // PWM mode, P1A, P1C active-high; P1B, P1D active-high
     CCP1CONbits.CCP1M = 0b1100;
     
-    TRISC = 0; // CCP1(RC2) is output
-    TRISB = 1; // RB0 is input
-    LATC = 0; // output low
+    // button already initialize
+    // TRISC = 0; // CCP1(RC2) is output
+    // TRISB = 1; // RB0 is input
+    // LATC = 0; // output low
     
     // Set up PR2, CCP to decide PWM period and Duty Cycle
     /** 

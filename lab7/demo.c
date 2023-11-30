@@ -65,23 +65,23 @@
 #include <pic18f4520.h>
 
 void __interrupt(high_priority) H_ISR(){
-    if(INTCONbits.INT0IF == 1){
+    if(INTCONbits.INT0IF == 1){ // if INT01F interrupt flag is set, representing that INT0 external interrupt occurred (must be cleared in software)
         LATAbits.LA0 = 1;
-        __delay_ms(500);
+        __delay_ms(500); 
         LATAbits.LA0 = 0;
         INTCONbits.INT0IF = 0;
     }
 }
 
 void main(void) {
-    ADCON1 = 0x0f;
-    TRISA = 0x00;
-    LATA = 0x00;
-    TRISBbits.RB0 = 1;
-    RCONbits.IPEN = 0;
-    INTCONbits.INT0F = 0;
-    INTCONbits.INT0E = 1;
-    INTCONbits.GIE = 1;
+    ADCON1 = 0x0f;  // set all pins to digital
+    TRISA = 0x00;  // set RA0~PA8 to output
+    LATA = 0x00;  // set RA0~RA8 pins to low
+    TRISBbits.RB0 = 1; // set RB0 to input
+    RCONbits.IPEN = 0; // disable priority levels on interrupts
+    INTCONbits.INT0IF = 0; // clear INT0F interrupt flag
+    INTCONbits.INT0IE = 1; // enable INT0 external interrupt
+    INTCONbits.GIE = 1; // enable all unmasked interrupts
     while(1);
     return;
 }
