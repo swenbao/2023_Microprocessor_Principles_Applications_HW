@@ -71,19 +71,19 @@ void __interrupt(high_priority) H_ISR(){
     state += 1;
     if(state == 0){
         CCPR1L = 0x07; // CCPR1L is a file register
-        CCP1CONbits.DC1B = b'10';
+        CCP1CONbits.DC1B = 0b10;
     } else if(state == 1){
         CCPR1L = 0x0b; // CCPR1L is a file register
-        CCP1CONbits.DC1B = b'01';
+        CCP1CONbits.DC1B = 0b01;
     } else if(state == 2){
         CCPR1L = 0x0F; // CCPR1L is a file register
-        CCP1CONbits.DC1B = b'00';
+        CCP1CONbits.DC1B = 0b00;
     } else if(state == 3){
         CCPR1L = 0x0b; // CCPR1L is a file register
-        CCP1CONbits.DC1B = b'01';
+        CCP1CONbits.DC1B = 0b01;
     } else if(state == 4){
         CCPR1L = 0x07; // CCPR1L is a file register
-        CCP1CONbits.DC1B = b'10';
+        CCP1CONbits.DC1B = 0b10;
         state = 0;
     }
     INTCONbits.INT0IF = 0;
@@ -134,7 +134,7 @@ void main(void)
      * = 960µs ~= 975µs
      */
     CCPR1L = 0x07; // CCPR1L is a file register
-    CCP1CONbits.DC1B = b'10';
+    CCP1CONbits.DC1B = 0b10;
     
     while(1);
     return;
