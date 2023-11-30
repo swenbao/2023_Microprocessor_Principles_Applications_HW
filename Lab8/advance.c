@@ -74,7 +74,7 @@ void __interrupt(high_priority) H_ISR(){
             CCPR1L += 1;
             CCP1CONbits.DC1B = 0;
         }
-        __delay_ms(1);
+        __delay_ms(2);
     }
     CCPR1L = 0x04; // CCPR1L is a file register
     CCP1CONbits.DC1B = 0b00;
@@ -84,8 +84,6 @@ void __interrupt(high_priority) H_ISR(){
 
 void main(void)
 {
-    state = 0;
-
     // button input initialize
     ADCON1 = 0x0f;  // set all pins to digital
     TRISC = 0x00;  // set RC0~PC8 to output
