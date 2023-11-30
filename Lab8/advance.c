@@ -68,9 +68,9 @@
 
 void __interrupt(high_priority) H_ISR(){
     while((CCPR1L*4+CCP1CONbits.DC1B)*32 < 2400){
-        if(CCP1CONbits.DC1B < 4){
+        if(CCP1CONbits.DC1B < 3){
             CCP1CONbits.DC1B += 1;
-        } else if(CCP1CONbits.DC1B == 4){
+        } else if(CCP1CONbits.DC1B == 3){
             CCPR1L += 1;
             CCP1CONbits.DC1B = 0;
         }
