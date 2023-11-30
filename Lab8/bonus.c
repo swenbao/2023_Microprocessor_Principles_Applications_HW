@@ -92,8 +92,6 @@ void __interrupt(high_priority) H_ISR(){
 
 void main(void)
 {
-    state = 0;
-
     // button input initialize
     ADCON1 = 0x0f;  // set all pins to digital
     TRISC = 0x00;  // set RC0~PC8 to output
