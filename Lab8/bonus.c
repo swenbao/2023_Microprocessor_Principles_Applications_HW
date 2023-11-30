@@ -75,7 +75,7 @@ void __interrupt(high_priority) H_ISR(){
                 CCPR1L += 1;
                 CCP1CONbits.DC1B = 0;
             }
-            __delay_ms(1);
+            __delay_ms(10);
         }
         while((CCPR1L*4+CCP1CONbits.DC1B)*32 > 500){
             if(CCP1CONbits.DC1B > 0){
@@ -84,7 +84,7 @@ void __interrupt(high_priority) H_ISR(){
                 CCPR1L -= 1;
                 CCP1CONbits.DC1B = 3;
             }
-            __delay_ms(1);
+            __delay_ms(10);
         }
     }
     INTCONbits.INT0IF = 0;
