@@ -16,9 +16,12 @@ void __interrupt(high_priority)H_ISR(){
     //step4
     int value = ADRESH;
     
-    
     //do things
-    
+    value >>= 4;
+    LATAbits.RA1 = value & 0b0001;
+    LATAbits.RA2 = value & 0b0010;
+    LATAbits.RA3 = value & 0b0100;
+    LATAbits.RA4 = value & 0b1000;
     
     //clear flag bit
     PIR1bits.ADIF = 0;
@@ -37,7 +40,8 @@ void main(void)
 {
     //configure OSC and port
     OSCCONbits.IRCF = 0b110; // 4MHz
-    TRISAbits.RA0 = 1;       // analog input port
+    // TRISAbits.RA0 = 1;       // analog input port
+    TRISA = 0b00000001;
     
     //step1
     ADCON1bits.VCFG0 = 0;
