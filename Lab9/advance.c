@@ -21,28 +21,28 @@ void __interrupt(high_priority)H_ISR(){
     switch (value)
     {
         case 0:
-            LATA = 0b00000010;
+            LATA = 0b00001110;
             break;
         case 1:
-            LATA = 0b00000100;
-            break;
-        case 2:
             LATA = 0b00001000;
             break;
+        case 2:
+            LATA = 0b00000010;
+            break;
         case 3:
-            LATA = 0b00010000;
+            LATA = 0b00000000;
             break;
         case 4:
-            LATA = 0b00100000;
+            LATA = 0b00000100;
             break;
         case 5:
-            LATA = 0b01000000;
+            LATA = 0b00000010;
             break;
         case 6:
-            LATA = 0b10000000;
+            LATA = 0b00001000;
             break;
         case 7:
-            LATA = 0b00011100;
+            LATA = 0b00001010;
             break;
         default:
             break;
