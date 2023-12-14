@@ -28,10 +28,8 @@ void __interrupt(high_priority)H_ISR(){
     
     
     //step5 & go back step3
-    /*
-    delay at least 2tad
+    //delay at least 2tad
     ADCON0bits.GO = 1;
-    */
     
     return;
 }
