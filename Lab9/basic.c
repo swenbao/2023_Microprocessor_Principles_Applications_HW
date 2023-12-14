@@ -17,11 +17,8 @@ void __interrupt(high_priority)H_ISR(){
     int value = ADRESH;
     
     //do things
-    value >>= 4;
-    LATAbits.RA1 = value & 0b0001;
-    LATAbits.RA2 = value & 0b0010;
-    LATAbits.RA3 = value & 0b0100;
-    LATAbits.RA4 = value & 0b1000;
+    value >>= 3;
+    LATA = value;
     
     //clear flag bit
     PIR1bits.ADIF = 0;
