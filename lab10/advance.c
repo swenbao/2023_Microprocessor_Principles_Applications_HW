@@ -64,11 +64,13 @@
 #define _XTAL_FREQ 4000000
 #include <pic18f4520.h>
 
+int count = 0;
+
 void __interrupt(high_priority) H_ISR(){
     if(INTCONbits.INT0IF == 1){ // if INT01F interrupt flag is set, representing that INT0 external interrupt occurred (must be cleared in software)
-        LATAbits.LA0 = 1;
-        __delay_ms(500); 
-        LATAbits.LA0 = 0;
+        count <<= 1;
+        LATA = count;
+        //__delay_ms(500); 
         INTCONbits.INT0IF = 0;
     }
 }
