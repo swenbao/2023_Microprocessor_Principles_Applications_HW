@@ -72,6 +72,7 @@ void __interrupt(high_priority) H_ISR(){
         LATA = count;
         //__delay_ms(500); 
         INTCONbits.INT0IF = 0;
+        count++;
     }
 }
 
