@@ -65,20 +65,32 @@ ISR:
     RETFIE
     
 Initial:			
+    
+    ; set all pins to digital
     MOVLW 0x0F
     MOVWF ADCON1
+
+    ; set all A pins to output
     CLRF TRISA
     CLRF LATA
-    BSF RCON, IPEN
-    BSF INTCON, GIE
-    BCF PIR1, TMR2IF		; 為了使用TIMER2，所以要設定好相關的TMR2IF、TMR2IE、TMR2IP。
-    BSF IPR1, TMR2IP
-    BSF PIE1 , TMR2IE
-    MOVLW b'11111111'	        ; 將Prescale與Postscale都設為1:16，意思是之後每256個週期才會將TIMER2+1
+
+    ; set up interrupt
+    ; global
+    BSF RCON, IPEN ; enable priority
+    BSF INTCON, GIE ; enable global interrupt
+    
+    ; 為了使用TIMER2，所以要設定好相關的 TMR2IF、TMR2IE、TMR2IP。
+    BCF PIR1, TMR2IF	; 將TMR2IF清空
+    BSF IPR1, TMR2IP  ; 這邊設定 TMR2IP 為 1，代表 TIMER2 的 Interrupt 會是High Priority
+    BSF PIE1 , TMR2IE ; enable timer 2 interrupt
+
+    MOVLW b'11111111'	; 將Prescale與Postscale都設為1:16，意思是之後每256個週期才會將TIMER2+1
     MOVWF T2CON		; 而由於TIMER本身會是以系統時脈/4所得到的時脈為主
     MOVLW D'122'		; 因此每256 * 4 = 1024個cycles才會將TIMER2 + 1
     MOVWF PR2			; 若目前時脈為250khz，想要Delay 0.5秒的話，代表每經過125000cycles需要觸發一次Interrupt
-				; 因此PR2應設為 125000 / 1024 = 122.0703125， 約等於122。
+		              ; 因此PR2應設為 125000 / 1024 = 122.0703125， 約等於122。
+    
+    ; set up oscillator
     MOVLW D'00100000'
     MOVWF OSCCON	        ; 記得將系統時脈調整成250kHz
     
