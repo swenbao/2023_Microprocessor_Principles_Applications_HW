@@ -49,22 +49,25 @@ void main(void)
     ADCON0bits.CHS = 0b0000;  //AN0 當作 analog input
     // select AD conversion clock
     ADCON2bits.ADCS = 0b000;  //查表後設000(1Mhz < 2.86Mhz)
-    // select AD acquisition time
+    // select AD acquisition time (must > 2.4 us)
     ADCON2bits.ACQT = 0b001;  //Tad = 2 us acquisition time設2Tad = 4 > 2.4
-    // select AD justified mode
+    // select AD justified mode 
     ADCON2bits.ADFM = 0;    //left justified 
     // Turn on AD module
     ADCON0bits.ADON = 1;
     
-    
     //step2
+    // interrupt setting
+    // enable AD interrupt
     PIE1bits.ADIE = 1;
+    // clear AD interrupt flag
     PIR1bits.ADIF = 0;
+    // enable peripheral interrupt
     INTCONbits.PEIE = 1;
+    // enable global interrupt
     INTCONbits.GIE = 1;
 
-
-    //step3
+    //step3 Start !!
     ADCON0bits.GO = 1;
     
     while(1);

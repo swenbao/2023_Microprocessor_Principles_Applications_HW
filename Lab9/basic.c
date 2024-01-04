@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <time.h>
+#define _XTAL_FREQ 1000000
 
 #pragma config OSC = INTIO67  //OSCILLATOR SELECTION BITS (INTERNAL OSCILLATOR BLOCK, PORT FUNCTION ON RA6 AND RA7)
 #pragma config WDT = OFF      //Watchdog Timer Enable bit (WDT disabled (control is placed on the SWDTEN bit))
@@ -23,9 +24,9 @@ void __interrupt(high_priority)H_ISR(){
     //clear flag bit
     PIR1bits.ADIF = 0;
     
-    
     //step5 & go back step3
     //delay at least 2tad
+    __delay_ms(500);
     ADCON0bits.GO = 1;
     
     return;
