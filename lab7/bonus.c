@@ -113,11 +113,9 @@ void main(void) {
     // global
     RCONbits.IPEN = 1; // disable priority levels on interrupts
     INTCONbits.GIE = 1; // enable all unmasked interrupts
-
     // input button interrupt
     INTCONbits.INT0IE = 1; // enable INT0IE interrupt
     INTCONbits.INT0IF = 0; // clear INT0IF interrupt flag
-
     // timer 2 interrupt
     PIR1bits.TMR2IF = 0; // clear TMR2IF interrupt flag
     IPR1bits.TMR2IP = 1; // set TMR2IP to high priority

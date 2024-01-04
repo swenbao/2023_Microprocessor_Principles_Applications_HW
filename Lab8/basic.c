@@ -91,21 +91,32 @@ void __interrupt(high_priority) H_ISR(){
 
 void main(void)
 {
-    state = 0;
+    // set all pins to digital
+    ADCON1 = 0x0f;
 
-    // button input initialize
-    ADCON1 = 0x0f;  // set all pins to digital
+    // set up & initialize ports input output
+    // output ports
     TRISC = 0x00;  // set RC0~PC8 to output
     LATC = 0x00;  // set RC0~RC8 pins to low
+    // input ports
     TRISBbits.RB0 = 1; // set INT0(RB0) to input
-    RCONbits.IPEN = 0; // disable priority levels on interrupts
+
+    // set up interrupts
+    // global
+    RCONbits.IPEN = 1; // disable priority levels on interrupts
+    INTCONbits.GIE = 1; // enable all unmasked interrupts
+    // button interrupt (INT0 / RB0)
     INTCONbits.INT0IE = 1; // enable INT0 external interrupt
     INTCONbits.INT0IF = 0; // clear INT0F interrupt flag
-    INTCONbits.GIE = 1; // enable all unmasked interrupts
+    // No timer2 interrupt here
+    //PIR1bits.TMR2IF = 0; // clear TMR2IF interrupt flag
+    //IPR1bits.TMR2IP = 1; // set TMR2IP to high priority
+    //PIE1bits.TMR2IE = 1; // enable TMR2IE interrupt
 
     // PWM initialize
     T2CONbits.TMR2ON = 0b1; // activate Timer2
     T2CONbits.T2CKPS = 0b01; // prescaler = 4
+    // T2CONbits.T2OUTPS = 0b0000; // postscaler = 1
 
     // Internal Oscillator Frequency, Fosc = 125 kHz, Tosc = 8 µs
     OSCCONbits.IRCF = 0b001;
