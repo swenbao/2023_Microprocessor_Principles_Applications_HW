@@ -40,14 +40,21 @@ void main(void)
     TRISAbits.RA0 = 1;       //analog input port
     
     //step1
+    // select VREF 參考電壓
     ADCON1bits.VCFG0 = 0;
     ADCON1bits.VCFG1 = 0;
+    // select AD port control
     ADCON1bits.PCFG = 0b1110; //AN0 為analog input,其他則是 digital
+    // select AD input channel
     ADCON0bits.CHS = 0b0000;  //AN0 當作 analog input
+    // select AD conversion clock
     ADCON2bits.ADCS = 0b000;  //查表後設000(1Mhz < 2.86Mhz)
+    // select AD acquisition time
     ADCON2bits.ACQT = 0b001;  //Tad = 2 us acquisition time設2Tad = 4 > 2.4
-    ADCON0bits.ADON = 1;
+    // select AD justified mode
     ADCON2bits.ADFM = 0;    //left justified 
+    // Turn on AD module
+    ADCON0bits.ADON = 1;
     
     
     //step2
